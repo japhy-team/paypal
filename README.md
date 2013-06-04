@@ -1,7 +1,7 @@
 go-appengine-paypal
 ---
 
-go-appengine-paypal is a package written in Go on Google AppEngine for accessing PayPal APIs using the ["NVP"](https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_NVPAPIOverview#id09C2F0G0C7U) format.
+go-appengine-paypal is a Go package for Google AppEngine that allows you to access PayPal APIs using the ["NVP"](https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_NVPAPIOverview#id09C2F0G0C7U) format.
 
 Included is a method for using the [Digital Goods for Express Checkout](https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_IntegratingExpressCheckoutDG) payment option.
 
