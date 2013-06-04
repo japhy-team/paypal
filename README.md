@@ -17,7 +17,7 @@ Quick Start
 	)
 	
 	func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
-		// An example to start a paypal express checkout for digital goods
+		// An example to setup paypal express checkout for digital goods
 	
 		// Create an appengine context for this request
 		appengineContext := appengine.NewContext(r)
@@ -30,21 +30,22 @@ Quick Start
 		// Create the paypal Client
 		client := paypal.NewClient("Your_Uername", "Your_Password", "Your_Signature", httpClient, isSandbox)
 		
-		// Setup your checkout options
-		paymentAmount := 200
-		currencyCode := "USD"
-		returnURL := "http://example.com/returnURL"
-		cancelURL := "http://example.com/cancelURL"
-		
 		// Make an array of your digital-goods
 		goods := make([]paypal.PayPalDigitalGood, 1)
 		good := new(paypal.PayPalDigitalGood)
 		good.Name, good.Amount, good.Quantity = "Test Good", paymentAmount, 1
 		goods[0] = *good
 		
-		// Start Express checkout
+		// Setup your checkout options
+		paymentAmount := 200
+		currencyCode := "USD"
+		returnURL := "http://example.com/returnURL"
+		cancelURL := "http://example.com/cancelURL"
+		
+		// Setup Express checkout
 		response, err := client.SetExpressCheckoutDigitalGoods(paymentAmount, currencyCode, returnURL, cancelURL, goods)
 		
-		// Print result from paypal
+		// Print token, etc from paypal
 		fmt.Fprint(w, response.Values)
+		
 	}
