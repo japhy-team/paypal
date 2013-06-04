@@ -15,34 +15,34 @@ const (
 )
 
 type PayPalClient struct {
-	username		string
-	password		string
-	signature		string
-	usesSandbox		bool
-	client			*http.Client
+	username      string
+	password      string
+	signature     string
+	usesSandbox   bool
+	client        *http.Client
 }
 
 type PayPalDigitalGood struct {
-	Name		string
-	Amount		float64
-	Quantity	int16
+	Name      string
+	Amount    float64
+	Quantity  int16
 }
 
 type PayPalResponse struct {
-	Ack				string
-	CorrelationId	string
-	Timestamp		string
-	Version			string
-	Build			string
-	Values			url.Values
+	Ack           string
+	CorrelationId string
+	Timestamp     string
+	Version       string
+	Build         string
+	Values        url.Values
 }
 
 type PayPalError struct {
-	Ack string
-	ErrorCode string
-	ShortMessage string
-	LongMessage string
-	SeverityCode string
+	Ack           string
+	ErrorCode     string
+	ShortMessage  string
+	LongMessage   string
+	SeverityCode  string
 }
 
 func (e *PayPalError) Error() string {
