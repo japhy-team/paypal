@@ -58,8 +58,8 @@ func (e *PayPalError) Error() string {
     return message
 }
 
-func NewClient(username, password, signature string, usesSandbox bool) *PayPalClient {
-	return &PayPalClient{username, password, signature, usesSandbox, new(http.Client)}
+func NewClient(username, password, signature string, client *http.Client, usesSandbox bool) *PayPalClient {
+	return &PayPalClient{username, password, signature, usesSandbox, client}
 }
 
 func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse, error) {
@@ -74,8 +74,8 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 	}
 
 	formResponse, err := pClient.client.PostForm(endpoint, values)
-	defer formResponse.Body.Close()
 	if err != nil { return nil, err }
+	defer formResponse.Body.Close()
 
 	body, err := ioutil.ReadAll(formResponse.Body)
 	if err != nil { return nil, err }
