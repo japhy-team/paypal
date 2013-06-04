@@ -4,6 +4,7 @@ import (
   "../paypal"
 	"testing"
 	"os"
+  "strings"
 )
 
 const (
@@ -54,5 +55,9 @@ func TestSandboxRedirect(t *testing.T) {
 	
   if response.Values["ACK"][0] != "Success" {
     t.Errorf("Didn't get ACK=Success back from PayPal. Response was: %#v", response.Values)
+  }
+  
+  if strings.Index(response.CheckoutUrl(), response.Values["TOKEN"][0]) < 0 {
+    t.Errorf("Couldnt find TOKEN in response.CheckoutUrl(). response.CheckoutUrl() was: %s when token was: %s", response.CheckoutUrl(),response.Values["TOKEN"][0]) 
   }
 }

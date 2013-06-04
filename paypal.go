@@ -9,9 +9,11 @@ import (
 )
 
 const (
-	NVP_SANDBOX_URL     = "https://api-3t.sandbox.paypal.com/nvp"
-	NVP_PRODUCTION_URL  = "https://api-3t.paypal.com/nvp"
-	NVP_VERSION         = "84"
+	NVP_SANDBOX_URL         = "https://api-3t.sandbox.paypal.com/nvp"
+	NVP_PRODUCTION_URL      = "https://api-3t.paypal.com/nvp"
+  CHECKOUT_SANDBOX_URL    = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+  CHECKOUT_PRODUCTION_URL = "https://www.paypal.com/cgi-bin/webscr"
+	NVP_VERSION             = "84"
 )
 
 type PayPalClient struct {
@@ -35,6 +37,7 @@ type PayPalResponse struct {
 	Version       string
 	Build         string
 	Values        url.Values
+  usedSandbox   bool
 }
 
 type PayPalError struct {
@@ -55,7 +58,18 @@ func (e *PayPalError) Error() string {
 		message = "PayPal is undergoing maintenance.\nPlease try again later."
 	}
 
-    return message
+  return message
+}
+
+func (r *PayPalResponse) CheckoutUrl() string {
+  query := url.Values{}
+  query.Set("cmd", "_express-checkout")
+  query.Add("token", r.Values["TOKEN"][0])
+  checkoutUrl := CHECKOUT_PRODUCTION_URL
+  if r.usedSandbox {
+    checkoutUrl = CHECKOUT_SANDBOX_URL
+  }
+  return fmt.Sprintf("%s?%s", checkoutUrl, query.Encode())
 }
 
 func SumPayPalDigitalGoodAmounts(goods *[]PayPalDigitalGood) (sum float64) {
@@ -92,7 +106,7 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 	if err != nil { return nil, err }
 
 	responseValues, err := url.ParseQuery(string(body))
-	response := new(PayPalResponse)
+	response := &PayPalResponse{usedSandbox: pClient.usesSandbox}
 	if err == nil {
 		response.Ack = responseValues.Get("ACK")
 		response.CorrelationId = responseValues.Get("CORRELATIONID")
