@@ -11,7 +11,7 @@ Quick Start
 ---
 	import (
 		"fmt"
-		"paypal"
+		"github.com/crowdmob/paypal"
 		"appengine"
 		"appengine/urlfetch"
 	)
