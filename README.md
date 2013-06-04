@@ -9,43 +9,103 @@ This fork lets you choose to use [AppEngine's urlfetch package](https://develope
 
 Quick Start
 ---
-	import (
-		"fmt"
-		"github.com/crowdmob/paypal"
-		"appengine"
-		"appengine/urlfetch"
-	)
+
+####### Standard Go Usage
+```go
+import (
+  "fmt"
+  "github.com/crowdmob/paypal"
+  "appengine"
+  "appengine/urlfetch"
+)
+
+func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
+  // An example to setup paypal express checkout for digital goods
+  currencyCode := "USD"
+  isSandbox    := true
+  returnURL    := "http://example.com/returnURL"
+  cancelURL    := "http://example.com/cancelURL"
+  
+  // Create the paypal Client with urlfetch
+  client := paypal.NewDefaultClient("Your_Uername", "Your_Password", "Your_Signature", isSandbox)
+  
+  // Make a array of your digital-goods
+  testGoods := []paypal.PayPalDigitalGood{paypal.PayPalDigitalGood{
+    Name: "Test Good", 
+    Amount: 200.000,
+    Quantity: 5,
+  }}
+  
+  // Sum amounts and get the token!
+  response, err := client.SetExpressCheckoutDigitalGoods(paypal.SumPayPalDigitalGoodAmounts(&testGoods), 
+    currencyCode, 
+    returnURL, 
+    cancelURL, 
+    testGoods,
+  )
+  
+  if err != nil {
+    // ... gracefully handle error
+  } else { // redirect to paypal
+    http.Redirect(w, r, fmt.Sprintf("http://...%s", response.Values["TOKEN"][0]), 301)
+  }
+}
+```
+
+####### App Engine Usage
+```go
+import (
+	"fmt"
+	"github.com/crowdmob/paypal"
+	"appengine"
+	"appengine/urlfetch"
+)
+
+func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
+	// An example to setup paypal express checkout for digital goods
+	currencyCode := "USD"
+	isSandbox    := true
+	returnURL    := "http://example.com/returnURL"
+	cancelURL    := "http://example.com/cancelURL"
 	
-	func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
-		// An example to setup paypal express checkout for digital goods
-	
-		// Create an appengine context for this request
-		appengineContext := appengine.NewContext(r)
-		
-		// Create a urelfetch based HTTP Client (*http.Client) for sending PayPal a request
-		httpClient := urlfetch.Client(appengineContext)
-		
-		isSandbox := true
-		
-		// Create the paypal Client
-		client := paypal.NewClient("Your_Uername", "Your_Password", "Your_Signature", httpClient, isSandbox)
-		
-		// Make an array of your digital-goods
-		goods := make([]paypal.PayPalDigitalGood, 1)
-		good := new(paypal.PayPalDigitalGood)
-		good.Name, good.Amount, good.Quantity = "Test Good", paymentAmount, 1
-		goods[0] = *good
-		
-		// Setup your checkout options
-		paymentAmount := 200
-		currencyCode := "USD"
-		returnURL := "http://example.com/returnURL"
-		cancelURL := "http://example.com/cancelURL"
-		
-		// Setup Express checkout
-		response, err := client.SetExpressCheckoutDigitalGoods(paymentAmount, currencyCode, returnURL, cancelURL, goods)
-		
-		// Print token, etc from paypal
-		fmt.Fprint(w, response.Values)
-		
-	}
+	// Create the paypal Client with urlfetch
+	client := paypal.NewClient("Your_Uername", "Your_Password", "Your_Signature", urlfetch.Client(appengine.NewContext(r)), isSandbox)
+
+  // Make a array of your digital-goods
+  testGoods := []paypal.PayPalDigitalGood{paypal.PayPalDigitalGood{
+    Name: "Test Good", 
+    Amount: 200.000,
+    Quantity: 5,
+  }}
+  
+  // Sum amounts and get the token!
+  response, err := client.SetExpressCheckoutDigitalGoods(paypal.SumPayPalDigitalGoodAmounts(&testGoods), 
+    currencyCode, 
+    returnURL, 
+    cancelURL, 
+    testGoods,
+  )
+  
+  if err != nil {
+  // ... gracefully handle error
+  } else { // redirect to paypal
+    http.Redirect(w, r, fmt.Sprintf("http://...%s", response.Values["TOKEN"][0]), 301)
+  }
+}
+```
+
+Running Tests
+---
+There's a test suite included.  To run it, simply run:
+
+    go test paypal_test.go
+
+You'll have to have set the following environment variables to run the tests:
+
+    export PAYPAL_TEST_USERNAME=XXX
+    export PAYPAL_TEST_PASSWORD=XXX
+    export PAYPAL_TEST_SIGNATURE=XXX
+
+Tests currently run in sandbox.
+
+

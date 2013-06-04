@@ -29,13 +29,14 @@ func TestSandboxRedirect(t *testing.T) {
   
   client := paypal.NewDefaultClient(username, password, signature, true)  
 	
-	// Make an array of your digital-goods
+	// Make a array of your digital-goods
 	testGoods := []paypal.PayPalDigitalGood{paypal.PayPalDigitalGood{
     Name: "Test Good", 
     Amount: 200.000,
     Quantity: 5,
   }}
   
+  // Sum amounts and get the token!
 	response, err := client.SetExpressCheckoutDigitalGoods(paypal.SumPayPalDigitalGoodAmounts(&testGoods), 
     currencyCode, 
     TEST_RETURN_URL, 
