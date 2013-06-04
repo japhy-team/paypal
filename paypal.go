@@ -58,7 +58,11 @@ func (e *PayPalError) Error() string {
     return message
 }
 
-func NewClient(username, password, signature string, client *http.Client, usesSandbox bool) *PayPalClient {
+func NewDefaultClient(username, password, signature string, usesSandbox bool) *PayPalClient {
+	return &PayPalClient{username, password, signature, usesSandbox, new(http.Client)}
+}
+
+func NewClient(username, password, signature string, usesSandbox bool, client *http.Client) *PayPalClient {
 	return &PayPalClient{username, password, signature, usesSandbox, client}
 }
 
