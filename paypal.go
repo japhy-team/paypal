@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	sandboxEndpoint		= "https://api-3t.sandbox.paypal.com/nvp"
-	productionEndpoint	= "https://api-3t.paypal.com/nvp"
-	version				= "84"
+	NVP_SANDBOX_URL     = "https://api-3t.sandbox.paypal.com/nvp"
+	NVP_PRODUCTION_URL  = "https://api-3t.paypal.com/nvp"
+	NVP_VERSION         = "84"
 )
 
 type PayPalClient struct {
@@ -66,11 +66,11 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 	values.Add("USER", pClient.username);
 	values.Add("PWD", pClient.password);
 	values.Add("SIGNATURE", pClient.signature);
-	values.Add("VERSION", version);
+	values.Add("VERSION", NVP_VERSION);
 
-	endpoint := productionEndpoint
+	endpoint := NVP_PRODUCTION_URL
 	if pClient.usesSandbox {
-		endpoint = sandboxEndpoint
+		endpoint = NVP_PRODUCTION_URL
 	}
 
 	formResponse, err := pClient.client.PostForm(endpoint, values)
