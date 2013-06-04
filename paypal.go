@@ -58,6 +58,13 @@ func (e *PayPalError) Error() string {
     return message
 }
 
+func SumPayPalDigitalGoodAmounts(goods *[]PayPalDigitalGood) (sum float64) {
+  for _, dg := range *goods {
+    sum += dg.Amount * float64(dg.Quantity)
+  }
+  return
+}
+
 func NewDefaultClient(username, password, signature string, usesSandbox bool) *PayPalClient {
 	return &PayPalClient{username, password, signature, usesSandbox, new(http.Client)}
 }
@@ -76,7 +83,7 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 	if pClient.usesSandbox {
 		endpoint = NVP_SANDBOX_URL
 	}
-
+  
 	formResponse, err := pClient.client.PostForm(endpoint, values)
 	if err != nil { return nil, err }
 	defer formResponse.Body.Close()
