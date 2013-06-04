@@ -24,7 +24,7 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
   returnURL    := "http://example.com/returnURL"
   cancelURL    := "http://example.com/cancelURL"
   
-  // Create the paypal Client with urlfetch
+  // Create the paypal Client with default http client
   client := paypal.NewDefaultClient("Your_Username", "Your_Password", "Your_Signature", isSandbox)
   
   // Make a array of your digital-goods
