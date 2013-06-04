@@ -70,7 +70,7 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 
 	endpoint := NVP_PRODUCTION_URL
 	if pClient.usesSandbox {
-		endpoint = NVP_PRODUCTION_URL
+		endpoint = NVP_SANDBOX_URL
 	}
 
 	formResponse, err := pClient.client.PostForm(endpoint, values)
