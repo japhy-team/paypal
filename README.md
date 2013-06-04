@@ -15,8 +15,6 @@ Quick Start
 import (
   "fmt"
   "github.com/crowdmob/paypal"
-  "appengine"
-  "appengine/urlfetch"
 )
 
 func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +25,7 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
   cancelURL    := "http://example.com/cancelURL"
   
   // Create the paypal Client with urlfetch
-  client := paypal.NewDefaultClient("Your_Uername", "Your_Password", "Your_Signature", isSandbox)
+  client := paypal.NewDefaultClient("Your_Username", "Your_Password", "Your_Signature", isSandbox)
   
   // Make a array of your digital-goods
   testGoods := []paypal.PayPalDigitalGood{paypal.PayPalDigitalGood{
@@ -69,7 +67,7 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
 	cancelURL    := "http://example.com/cancelURL"
 	
 	// Create the paypal Client with urlfetch
-	client := paypal.NewClient("Your_Uername", "Your_Password", "Your_Signature", urlfetch.Client(appengine.NewContext(r)), isSandbox)
+	client := paypal.NewClient("Your_Username", "Your_Password", "Your_Signature", urlfetch.Client(appengine.NewContext(r)), isSandbox)
 
   // Make a array of your digital-goods
   testGoods := []paypal.PayPalDigitalGood{paypal.PayPalDigitalGood{
