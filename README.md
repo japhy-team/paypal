@@ -5,6 +5,8 @@ go-appengine-paypal is a Go package for Google AppEngine that allows you to acce
 
 Included is a method for using the [Digital Goods for Express Checkout](https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_IntegratingExpressCheckoutDG) payment option.
 
+This fork uses [AppEngine's urlfetch package](https://developers.google.com/appengine/docs/go/urlfetch/overview) to create the HTTP Client
+
 Quick Start
 ---
 	import (
