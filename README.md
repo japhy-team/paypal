@@ -47,7 +47,7 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
   if err != nil {
     // ... gracefully handle error
   } else { // redirect to paypal
-    http.Redirect(w, r, fmt.Sprintf("http://...%s", response.Values["TOKEN"][0]), 301)
+    http.Redirect(w, r, response.CheckoutUrl(), 301)
   }
 }
 ```
@@ -89,7 +89,7 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
   if err != nil {
   // ... gracefully handle error
   } else { // redirect to paypal
-    http.Redirect(w, r, fmt.Sprintf("http://...%s", response.Values["TOKEN"][0]), 301)
+    http.Redirect(w, r, response.CheckoutUrl(), 301)
   }
 }
 ```
