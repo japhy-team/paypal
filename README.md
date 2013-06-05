@@ -7,7 +7,7 @@ Included is a method for using the [Digital Goods for Express Checkout](https://
 
 This fork lets you choose to use [AppEngine's urlfetch package](https://developers.google.com/appengine/docs/go/urlfetch/overview) to create the HTTP Client
 
-Quick Start
+Quick Start: Setting Up a PayPal Charge (Redirect)
 ---
 
 ####### Standard Go Usage
@@ -92,10 +92,26 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-The "Return URL"
+Quick Start: Completing a PayPal Charge
 ---
+According to their documentation (see bottom of page), you'll have to call their `DoExpressCheckoutPayment` api to successfully charge a transaction.
 
-PayPal will append a token and PayerId to your return URL as parameters, like this: `token=XX-XXXXXXXXXXXXXXXXXX&PayerID=XXXXXXXXXXXXX`
+In the Return URL, PayPal will append a token and PayerId to your return URL as parameters, like this: `token=XX-XXXXXXXXXXXXXXXXXX&PayerID=XXXXXXXXXXXXX`.
+
+Your controller for the Return URL typically will call the `DoExpressCheckoutSale` (or `DoExpressCheckoutPayment` for more control), as follows:
+
+```go
+client := paypal.NewDefaultClient("Your_Username", "Your_Password", "Your_Signature", isSandbox)
+response, err := client.DoExpressCheckoutSale(r.FormValue("token"), r.FormValue("PayerID"), "USD", AMOUNT_OF_SALE)
+
+if err != nil {
+  // ... handle error in charging
+  http.Redirect(w, r, MY_CHARGE_ERROR_URL, 301)
+} else { // success!
+  http.Redirect(w, r, fmt.Sprintf("%s?receipt-id=%s", MY_RECEIPT_URL, response.Values["PAYMENTREQUEST_0_TRANSACTIONID"][0]), 301)
+}
+```
+
 
 Running Tests
 ---

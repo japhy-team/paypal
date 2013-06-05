@@ -12,21 +12,24 @@ const (
   TEST_CANCEL_URL = "http://localhost/CANCEL-URL"
 )
 
-func TestSandboxRedirect(t *testing.T) {
-  currencyCode :=  "USD"
-  
-  username := os.Getenv("PAYPAL_TEST_USERNAME")
+func fetchEnvVars(t *testing.T) (username, password, signature string) {
+  username = os.Getenv("PAYPAL_TEST_USERNAME")
 	if len(username) <= 0 {
 		t.Fatalf("Test cannot run because cannot get environment variable PAYPAL_TEST_USERNAME")
 	}
-  password := os.Getenv("PAYPAL_TEST_PASSWORD")
+  password = os.Getenv("PAYPAL_TEST_PASSWORD")
 	if len(password) <= 0 {
 		t.Fatalf("Test cannot run because cannot get environment variable PAYPAL_TEST_PASSWORD")
 	}
-  signature := os.Getenv("PAYPAL_TEST_SIGNATURE")
+  signature = os.Getenv("PAYPAL_TEST_SIGNATURE")
 	if len(signature) <= 0 {
 		t.Fatalf("Test cannot run because cannot get environment variable PAYPAL_TEST_SIGNATURE")
 	}
+  return
+}
+
+func TestSandboxRedirect(t *testing.T) {
+  username, password, signature := fetchEnvVars(t)
   
   client := paypal.NewDefaultClient(username, password, signature, true)  
 	
@@ -39,7 +42,7 @@ func TestSandboxRedirect(t *testing.T) {
   
   // Sum amounts and get the token!
 	response, err := client.SetExpressCheckoutDigitalGoods(paypal.SumPayPalDigitalGoodAmounts(&testGoods), 
-    currencyCode, 
+    "USD", 
     TEST_RETURN_URL, 
     TEST_CANCEL_URL, 
     testGoods,
@@ -59,5 +62,18 @@ func TestSandboxRedirect(t *testing.T) {
   
   if strings.Index(response.CheckoutUrl(), response.Values["TOKEN"][0]) < 0 {
     t.Errorf("Couldnt find TOKEN in response.CheckoutUrl(). response.CheckoutUrl() was: %s when token was: %s", response.CheckoutUrl(),response.Values["TOKEN"][0]) 
+  }
+}
+
+func TestErroneousDoExpressCheckoutSale(t *testing.T) {
+  username, password, signature := fetchEnvVars(t)
+  
+  client := paypal.NewDefaultClient(username, password, signature, true)  
+  response, err := client.DoExpressCheckoutSale("Fake_Token", "Fake_PayerId", "USD", 1000.00)
+    
+  if err != nil {
+    // as expected 
+  } else { // successful transaction would be wrong
+    t.Errorf("Expected an error during transaction, but got a successful transaction: %#v.", response)
   }
 }

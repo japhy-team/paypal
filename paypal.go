@@ -155,7 +155,13 @@ func (pClient *PayPalClient) SetExpressCheckoutDigitalGoods(paymentAmount float6
 	return pClient.PerformRequest(values)
 }
 
-func (pClient *PayPalClient) ConfirmExpressCheckoutPayment(token, payerId, paymentType, currencyCode string, finalPaymentAmount float64) (*PayPalResponse, error) {
+// Convenience function for Sale (Charge)
+func (pClient *PayPalClient) DoExpressCheckoutSale(token, payerId, currencyCode string, finalPaymentAmount float64) (*PayPalResponse, error) {
+  return pClient.DoExpressCheckoutPayment(token, payerId, "Sale", currencyCode, finalPaymentAmount)
+}
+
+// paymentType can be "Sale" or "Authorization" or "Order" (ship later)
+func (pClient *PayPalClient) DoExpressCheckoutPayment(token, payerId, paymentType, currencyCode string, finalPaymentAmount float64) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "DoExpressCheckoutPayment")
 	values.Add("TOKEN", token)
