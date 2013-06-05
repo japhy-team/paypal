@@ -104,10 +104,10 @@ Your controller for the Return URL typically will call the `DoExpressCheckoutSal
 client := paypal.NewDefaultClient("Your_Username", "Your_Password", "Your_Signature", isSandbox)
 response, err := client.DoExpressCheckoutSale(r.FormValue("token"), r.FormValue("PayerID"), "USD", AMOUNT_OF_SALE)
 
-if err != nil {
-  // ... handle error in charging
+if err != nil { // handle error in charging
   http.Redirect(w, r, MY_CHARGE_ERROR_URL, 301)
 } else { // success!
+  // ... handle successful charge
   http.Redirect(w, r, fmt.Sprintf("%s?receipt-id=%s", MY_RECEIPT_URL, response.Values["PAYMENTREQUEST_0_TRANSACTIONID"][0]), 301)
 }
 ```
