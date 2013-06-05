@@ -92,6 +92,11 @@ func paypalExpressCheckoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
+The "Return URL"
+---
+
+PayPal will append a token and PayerId to your return URL as parameters, like this: `token=XX-XXXXXXXXXXXXXXXXXX&PayerID=XXXXXXXXXXXXX`
+
 Running Tests
 ---
 There's a test suite included.  To run it, simply run:
@@ -106,4 +111,11 @@ You'll have to have set the following environment variables to run the tests:
 
 Tests currently run in sandbox.
 
+
+PayPal Documentation
+---
+
+PayPal documentation is scattered at best.  Here's the best link I've found that describes it: [How to Create One-Time Payments Using Express Checkout](https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/ht_ec-singleItemPayment-curl-etc/ "How to Create One-Time Payments Using Express Checkout")
+
+![PayPal NVP Express Checkout Flow](https://www.paypalobjects.com/webstatic/en_US/developer/docs/ec/sandboxEC.gif)
 
