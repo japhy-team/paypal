@@ -172,3 +172,10 @@ func (pClient *PayPalClient) DoExpressCheckoutPayment(token, payerId, paymentTyp
 
 	return pClient.PerformRequest(values)
 }
+
+func (pClient *PayPalClient) GetExpressCheckoutDetails(token string) (*PayPalResponse, error) {
+  values := url.Values{}
+	values.Add("TOKEN", token)
+	values.Set("METHOD", "GetExpressCheckoutDetails")
+	return pClient.PerformRequest(values)
+}

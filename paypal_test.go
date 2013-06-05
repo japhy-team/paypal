@@ -77,3 +77,16 @@ func TestErroneousDoExpressCheckoutSale(t *testing.T) {
     t.Errorf("Expected an error during transaction, but got a successful transaction: %#v.", response)
   }
 }
+
+
+func TestErroneousGetExpressCheckoutDetails(t *testing.T) {
+  username, password, signature := fetchEnvVars(t)
+  
+  client := paypal.NewDefaultClient(username, password, signature, true)  
+  response, err := client.GetExpressCheckoutDetails("Fake_Token")
+  if err != nil {
+    // as expected 
+  } else { // successful transaction would be wrong
+    t.Errorf("Expected an error during transaction, but got a successful transaction: %#v.", response)
+  }
+}
