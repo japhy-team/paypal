@@ -183,3 +183,65 @@ func (pClient *PayPalClient) GetExpressCheckoutDetails(token string) (*PayPalRes
 	values.Set("METHOD", "GetExpressCheckoutDetails")
 	return pClient.PerformRequest(values)
 }
+
+//----------------------------------------------------------
+// Forked
+//----------------------------------------------------------
+
+func (pClient *PayPalClient) CreateRecurringPaymentsProfile(token string, params map[string]string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Add("TOKEN", token)
+	values.Set("METHOD", "CreateRecurringPaymentsProfile")
+
+	for key, value := range params {
+		values.Add(key, value)
+	}
+
+	return pClient.PerformRequest(values)
+}
+
+func (pClient *PayPalClient) BillOutstandingAmount(profileId string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "BillOutstandingAmount")
+	values.Set("PROFILEID", profileId)
+
+	return pClient.PerformRequest(values)
+}
+
+func NewDigitalGood(name string, amount float64) *PayPalDigitalGood {
+	return &PayPalDigitalGood{
+		Name:     name,
+		Amount:   amount,
+		Quantity: 1,
+	}
+}
+
+type ExpressCheckoutSingleArgs struct {
+	Amount                             float64
+	CurrencyCode, ReturnURL, CancelURL string
+	Recurring                          bool
+	Item                               *PayPalDigitalGood
+}
+
+func NewExpressCheckoutSingleArgs() *ExpressCheckoutSingleArgs {
+	return &ExpressCheckoutSingleArgs{
+		Amount:       0,
+		CurrencyCode: "USD",
+		Recurring:    true,
+	}
+}
+
+func (pClient *PayPalClient) SetExpressCheckoutSingle(args *ExpressCheckoutSingleArgs) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "SetExpressCheckout")
+	values.Add("PAYMENTREQUEST_0_AMT", fmt.Sprintf("%.2f", args.Amount))
+	values.Add("NOSHIPPING", "1")
+
+	values.Add("L_BILLINGTYPE0", "RecurringPayments")
+	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", args.Item.Name)
+
+	values.Add("RETURNURL", args.ReturnURL)
+	values.Add("CANCELURL", args.CancelURL)
+
+	return pClient.PerformRequest(values)
+}
