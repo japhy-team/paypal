@@ -1,7 +1,7 @@
 paypal
 ======
 
-* This is a fork version of the forked version. This package adds the following methods ontop of the ones below:
+* This is a forked version of the forked version. This package adds the following methods ontop of the ones below:
 
 ```
 SetExpressCheckoutInitiateBilling(cancelURL, returnURL, currencyCode, billingAgreementDescription)
