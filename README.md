@@ -1,6 +1,15 @@
 paypal
 ======
 
+* This is a fork version of the forked version. This package adds the following methods ontop of the ones below:
+
+```
+SetExpressCheckoutInitiateBilling(cancelURL, returnURL, currencyCode, billingAgreementDescription)
+CreateBillingAgreement(token)
+DoReferenceTransaction(paymentAmount, currencyCode, token)
+RefundTransaction(transactionID, refundType)
+```
+
 * This is a forked version of the origial library. This package adds the following methods:
 
 ```
