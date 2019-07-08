@@ -10,7 +10,7 @@ DoReferenceTransaction(paymentAmount, currencyCode, token)
 RefundTransaction(transactionID, refundType)
 ```
 
-* This is a forked version of the origial library. This package adds the following methods:
+* This is a forked version of the original library. This package adds the following methods:
 
 ```
 SetExpressCheckoutSingle()
