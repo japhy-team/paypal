@@ -265,6 +265,40 @@ func NewExpressCheckoutSingleArgs() *ExpressCheckoutSingleArgs {
 	}
 }
 
+func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, currencyCode string, token string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "DoReferenceTransaction")
+	values.Add("AMT", paymentAmount)
+	values.Add("PAYMENTACTION", "SALE")
+	values.Add("REFERENCEID", token)
+
+	return pClient.PerformRequest(values)
+}
+
+func (pClient *PayPalClient) SetExpressCheckoutInitiateBilling(cancelURL string, returnURL string, currencyCode string, billingAgreementDescription string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "SetExpressCheckout")
+	values.Add("PAYMENTREQUEST_0_PAYMENTACTION", "AUTHORIZATION")
+	values.Add("PAYMENTREQUEST_0_AMT", "00.00")
+	values.Add("PAYMENTREQUEST_0_CURRENCYCODE", currencyCode)
+
+	values.Add("L_BILLINGTYPE0", "MerchantInitiatedBilling")
+	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", billingAgreementDescription)
+
+	values.Add("RETURNURL", returnURL)
+	values.Add("CANCELURL", cancelURL)
+
+	return pClient.PerformRequest(values)
+}
+
+func (pClient *PayPalClient) CreateBillingAgreement(token string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "CreateBillingAgreement")
+	values.Add("TOKEN", token)
+
+	return pClient.PerformRequest(values)
+}
+
 func (pClient *PayPalClient) SetExpressCheckoutSingle(args *ExpressCheckoutSingleArgs) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "SetExpressCheckout")
@@ -328,6 +362,16 @@ func (pClient *PayPalClient) ProfileTransactionSearch(profileId string, startDat
 	values.Set("PROFILEID", profileId)
 	values.Set("METHOD", "TransactionSearch")
 	values.Set("STARTDATE", startDate.Format(time.RFC3339))
+
+	return pClient.PerformRequest(values)
+}
+
+func (pClient *PayPalClient) RefundTransaction(transactionID string, refundType string) (*PayPalResponse, error) {
+	values := url.Values{}
+
+	values.Set("METHOD", "RefundTransaction")
+	values.Set("TRANSACTIONID", transactionID)
+	values.Set("REFUNDTYPE", "FULL")
 
 	return pClient.PerformRequest(values)
 }
