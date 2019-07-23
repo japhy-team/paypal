@@ -265,11 +265,11 @@ func NewExpressCheckoutSingleArgs() *ExpressCheckoutSingleArgs {
 	}
 }
 
-func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, currencyCode string, token string) (*PayPalResponse, error) {
+func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, currencyCode string, token string, paymentMethod string) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "DoReferenceTransaction")
 	values.Add("AMT", paymentAmount)
-	values.Add("PAYMENTACTION", "SALE")
+	values.Add("PAYMENTACTION", paymentMethod)
 	values.Add("REFERENCEID", token)
 
 	return pClient.PerformRequest(values)
