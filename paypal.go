@@ -174,7 +174,7 @@ func (pClient *PayPalClient) PerformRequest(values url.Values) (*PayPalResponse,
 	response := &PayPalResponse{usedSandbox: pClient.usesSandbox}
 	if err == nil {
 		response.Ack = responseValues.Get("ACK")
-		response.CorrelationId = responseValues.Get("CORRELATIONID")
+		response.CorrelationID = responseValues.Get("CORRELATIONID")
 		response.Timestamp = responseValues.Get("TIMESTAMP")
 		response.Version = responseValues.Get("VERSION")
 		response.Build = responseValues.Get("2975009")
