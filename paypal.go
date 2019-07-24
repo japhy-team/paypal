@@ -32,14 +32,43 @@ type PayPalDigitalGood struct {
 	Quantity int16
 }
 
+type PayPalRequest struct {
+	Action                string `json:"action"`
+	BillingMethodID       string `json:"billingMethodID"`
+	Amount                string `json:"paymentAmount"`
+	BillingAgreementToken string `json:"billingAgreementToken"`
+	TransactionID         string `json:"transactionID"`
+}
+
 type PayPalResponse struct {
-	Ack           string
-	CorrelationId string
-	Timestamp     string
-	Version       string
-	Build         string
-	Values        url.Values
+	Ack           string     `json:"Ack"`
+	Build         string     `json:"Build"`
+	CorrelationID string     `json:"CorrelationId"`
+	Timestamp     string     `json:"Timestamp"`
+	Version       string     `json:"Version"`
+	Values        url.Values `json:"Values"`
 	usedSandbox   bool
+}
+
+type PayPalValues struct {
+	Ack                       string `json:"ACK"`
+	Amount                    string `json:"AMT"`
+	BillingAgreementID        string `json:"BILLINGAGREEMENTID"`
+	Build                     string `json:"BUILD"`
+	CorrelationID             string `json:"CORRELATIONID"`
+	CurrencyCode              string `json:"CURRENCYCODE"`
+	DateOrdered               string `json:"ORDERTIME"`
+	PaymentStatus             string `json:"PAYMENTSTATUS"`
+	PaymentType               string `json:"PAYMENTTYPE"`
+	PendingReason             string `json:"PENDINGREASON"`
+	ProtectionEligibility     string `json:"PROTECTIONELIGIBLITY"`
+	ProtectionEligibilityType string `json:"PROTECTIONELIGIBILITYTYPE"`
+	ReasonCode                string `json:"REASONCODE"`
+	TaxedAmount               string `json:"TAXAMT"`
+	Timestamp                 string `json:"TIMESTAMP"`
+	TransactionID             string `json:"TRANSACTIONID"`
+	TransactionType           string `json:"TRANSACTIONTYPE"`
+	Version                   string `json:"VERSION"`
 }
 
 type PayPalError struct {
