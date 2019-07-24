@@ -265,16 +265,38 @@ func NewExpressCheckoutSingleArgs() *ExpressCheckoutSingleArgs {
 	}
 }
 
-func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, currencyCode string, token string, paymentMethod string) (*PayPalResponse, error) {
+// DoReferenceTransaction Completes a transaction through Billing Agreements
+// see (https://developer.paypal.com/docs/classic/api/merchant/DoReferenceTransaction-API-Operation-NVP/ for more information
+func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, referenceID string, paymentMethod string, merchantSessionID string) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "DoReferenceTransaction")
 	values.Add("AMT", paymentAmount)
 	values.Add("PAYMENTACTION", paymentMethod)
-	values.Add("REFERENCEID", token)
+	values.Add("REFERENCEID", referenceID)
 
 	return pClient.PerformRequest(values)
 }
 
+// DoCapture captures an authorized payment, for our purposes it captures payments that are authorized by doReferenceTransaction which can be confusing because it returns a transactionID not an authorizationID
+// however it can be used to capture any authorized payment
+// See https://developer.paypal.com/docs/classic/api/merchant/DoCapture-API-Operation-NVP/ for details
+func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID string, isComplete bool, invoiceID string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "DoCapture")
+	values.Add("AMT", paymentAmount)
+	values.Add("INVNUM", invoiceID)
+	if isComplete {
+		values.Add("COMPLETETYPE", "Complete")
+	} else {
+		values.Add("COMPLETETYPE", "NotComplete")
+	}
+
+	return pClient.PerformRequest(values)
+}
+
+// SetExpressCheckoutInitiateBilling is the first step to create a billing agreement. It returns a token that should be used to redirect the user so they can agree to recurring billing of varying quantities
+// the token returned is not a billing agreement, however, it must be created once the user has approved
+// See https://developer.paypal.com/docs/classic/express-checkout/ec-set-up-reference-transactions/# for details
 func (pClient *PayPalClient) SetExpressCheckoutInitiateBilling(cancelURL string, returnURL string, currencyCode string, billingAgreementDescription string) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "SetExpressCheckout")
@@ -291,6 +313,9 @@ func (pClient *PayPalClient) SetExpressCheckoutInitiateBilling(cancelURL string,
 	return pClient.PerformRequest(values)
 }
 
+// CreateBillingAgreement will create a billing agreement with the provided token. Once a billing agreement id has been obtained, your backend can conduct transactions against the corresponding user
+// for as long as the billing agreement, without explicit user approval through the doReferenceTransaction call
+// See https://developer.paypal.com/docs/classic/express-checkout/ec-set-up-reference-transactions/# for details
 func (pClient *PayPalClient) CreateBillingAgreement(token string) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "CreateBillingAgreement")
