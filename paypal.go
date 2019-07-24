@@ -285,6 +285,7 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 	values.Set("METHOD", "DoCapture")
 	values.Add("AMT", paymentAmount)
 	values.Add("INVNUM", invoiceID)
+	values.Add("AUTHORIZATIONID", authorizationID)
 	if isComplete {
 		values.Add("COMPLETETYPE", "Complete")
 	} else {
