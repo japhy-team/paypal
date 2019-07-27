@@ -325,7 +325,7 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 // func (pClient *PayPalClient) DoVoid()
 
 // *** I need to convert the return value into a struct
-func (pClient *PayPalClient) convertResponse(paypalResponse PayPalResponse) *PayPalValues {
+func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *PayPalValues {
 	return &PayPalValues{
 		Ack:                  paypalResponse.Values["ACK"][0],
 		Amount:               paypalResponse.Values["AMT"][0],
