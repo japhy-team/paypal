@@ -32,14 +32,6 @@ type PayPalDigitalGood struct {
 	Quantity int16
 }
 
-type PayPalRequest struct {
-	Action                string `json:"action"`
-	BillingMethodID       string `json:"billingMethodID"`
-	Amount                string `json:"paymentAmount"`
-	BillingAgreementToken string `json:"billingAgreementToken"`
-	TransactionID         string `json:"transactionID"`
-}
-
 type PayPalResponse struct {
 	Ack           string     `json:"Ack"`
 	Build         string     `json:"Build"`
@@ -57,6 +49,9 @@ type PayPalValues struct {
 	Build                     string `json:"BUILD"`
 	CorrelationID             string `json:"CORRELATIONID"`
 	CurrencyCode              string `json:"CURRENCYCODE"`
+	ErrorCode                 string `json:"ERRORCODE0"`
+	ErrorMessage              string `json:"L_SHORTMESSAGE0"`
+	ErrorMessageExtended      string `json:"L_LONGMESSAGE0"`
 	DateOrdered               string `json:"ORDERTIME"`
 	PaymentStatus             string `json:"PAYMENTSTATUS"`
 	PaymentType               string `json:"PAYMENTTYPE"`
@@ -64,6 +59,7 @@ type PayPalValues struct {
 	ProtectionEligibility     string `json:"PROTECTIONELIGIBLITY"`
 	ProtectionEligibilityType string `json:"PROTECTIONELIGIBILITYTYPE"`
 	ReasonCode                string `json:"REASONCODE"`
+	SeverityCode              string `json:"L_SEVERITYCODE0"`
 	TaxedAmount               string `json:"TAXAMT"`
 	Timestamp                 string `json:"TIMESTAMP"`
 	TransactionID             string `json:"TRANSACTIONID"`
@@ -322,6 +318,33 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 	}
 
 	return pClient.PerformRequest(values)
+}
+
+// DoVoid voids an authorized payment
+// See https://developer.paypal.com/docs/classic/api/merchant/DoCapture-API-Operation-NVP/ for details
+// func (pClient *PayPalClient) DoVoid()
+
+// *** I need to convert the return value into a struct
+func (pClient *PayPalClient) convertResponse(paypalResponse PayPalResponse) *PayPalValues {
+	return &PayPalValues{
+		Ack:                  paypalResponse.Values["ACK"][0],
+		Amount:               paypalResponse.Values["AMT"][0],
+		BillingAgreementID:   paypalResponse.Values["BILLINGAGREEMENTID"][0],
+		Build:                paypalResponse.Values["BUILD"][0],
+		CorrelationID:        paypalResponse.Values["CORRELATIONID"][0],
+		CurrencyCode:         paypalResponse.Values["CURRENCYCODE"][0],
+		DateOrdered:          paypalResponse.Values["ORDERTIME"][0],
+		ErrorCode:            paypalResponse.Values["ERRORCODE0"][0],
+		ErrorMessage:         paypalResponse.Values["L_SHORTMESSAGE0"][0],
+		ErrorMessageExtended: paypalResponse.Values["L_LONGMESSAGE0"][0],
+		SeverityCode:         paypalResponse.Values["L_SEVERITYCODE0"][0],
+		PaymentStatus:        paypalResponse.Values["PAYMENTSTATUS"][0],
+		PendingReason:        paypalResponse.Values["PENDINGREASON"][0],
+		ReasonCode:           paypalResponse.Values["REASONCODE"][0],
+		Timestamp:            paypalResponse.Values["TIMESTAMP"][0],
+		TransactionType:      paypalResponse.Values["TRANSACTIONTYPE"][0],
+		Version:              paypalResponse.Values["VERSION"][0],
+	}
 }
 
 // SetExpressCheckoutInitiateBilling is the first step to create a billing agreement. It returns a token that should be used to redirect the user so they can agree to recurring billing of varying quantities
