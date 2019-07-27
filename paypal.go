@@ -327,11 +327,11 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 // *** I need to convert the return value into a struct
 func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *PayPalValues {
 	return &PayPalValues{
-		Ack:                  pClient.parseResponse(paypalResponse.Values["ACK"]),
+		Ack:                  paypalResponse.Ack,
 		Amount:               pClient.parseResponse(paypalResponse.Values["AMT"]),
 		BillingAgreementID:   pClient.parseResponse(paypalResponse.Values["BILLINGAGREEMENTID"]),
 		Build:                pClient.parseResponse(paypalResponse.Values["BUILD"]),
-		CorrelationID:        pClient.parseResponse(paypalResponse.Values["CORRELATIONID"]),
+		CorrelationID:        paypalResponse.CorrelationID,
 		CurrencyCode:         pClient.parseResponse(paypalResponse.Values["CURRENCYCODE"]),
 		DateOrdered:          pClient.parseResponse(paypalResponse.Values["ORDERTIME"]),
 		ErrorCode:            pClient.parseResponse(paypalResponse.Values["ERRORCODE0"]),
@@ -341,7 +341,7 @@ func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *Pay
 		PaymentStatus:        pClient.parseResponse(paypalResponse.Values["PAYMENTSTATUS"]),
 		PendingReason:        pClient.parseResponse(paypalResponse.Values["PENDINGREASON"]),
 		ReasonCode:           pClient.parseResponse(paypalResponse.Values["REASONCODE"]),
-		Timestamp:            pClient.parseResponse(paypalResponse.Values["TIMESTAMP"]),
+		Timestamp:            paypalResponse.Timestamp,
 		TransactionType:      pClient.parseResponse(paypalResponse.Values["TRANSACTIONTYPE"]),
 		Version:              pClient.parseResponse(paypalResponse.Values["VERSION"]),
 	}
