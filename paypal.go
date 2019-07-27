@@ -327,23 +327,31 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 // *** I need to convert the return value into a struct
 func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *PayPalValues {
 	return &PayPalValues{
-		Ack:                  paypalResponse.Values["ACK"][0],
-		Amount:               paypalResponse.Values["AMT"][0],
-		BillingAgreementID:   paypalResponse.Values["BILLINGAGREEMENTID"][0],
-		Build:                paypalResponse.Values["BUILD"][0],
-		CorrelationID:        paypalResponse.Values["CORRELATIONID"][0],
-		CurrencyCode:         paypalResponse.Values["CURRENCYCODE"][0],
-		DateOrdered:          paypalResponse.Values["ORDERTIME"][0],
-		ErrorCode:            paypalResponse.Values["ERRORCODE0"][0],
-		ErrorMessage:         paypalResponse.Values["L_SHORTMESSAGE0"][0],
-		ErrorMessageExtended: paypalResponse.Values["L_LONGMESSAGE0"][0],
-		SeverityCode:         paypalResponse.Values["L_SEVERITYCODE0"][0],
-		PaymentStatus:        paypalResponse.Values["PAYMENTSTATUS"][0],
-		PendingReason:        paypalResponse.Values["PENDINGREASON"][0],
-		ReasonCode:           paypalResponse.Values["REASONCODE"][0],
-		Timestamp:            paypalResponse.Values["TIMESTAMP"][0],
-		TransactionType:      paypalResponse.Values["TRANSACTIONTYPE"][0],
-		Version:              paypalResponse.Values["VERSION"][0],
+		Ack:                  pClient.parseResponse(paypalResponse.Values["ACK"]),
+		Amount:               pClient.parseResponse(paypalResponse.Values["AMT"]),
+		BillingAgreementID:   pClient.parseResponse(paypalResponse.Values["BILLINGAGREEMENTID"]),
+		Build:                pClient.parseResponse(paypalResponse.Values["BUILD"]),
+		CorrelationID:        pClient.parseResponse(paypalResponse.Values["CORRELATIONID"]),
+		CurrencyCode:         pClient.parseResponse(paypalResponse.Values["CURRENCYCODE"]),
+		DateOrdered:          pClient.parseResponse(paypalResponse.Values["ORDERTIME"]),
+		ErrorCode:            pClient.parseResponse(paypalResponse.Values["ERRORCODE0"]),
+		ErrorMessage:         pClient.parseResponse(paypalResponse.Values["L_SHORTMESSAGE0"]),
+		ErrorMessageExtended: pClient.parseResponse(paypalResponse.Values["L_LONGMESSAGE0"]),
+		SeverityCode:         pClient.parseResponse(paypalResponse.Values["L_SEVERITYCODE0"]),
+		PaymentStatus:        pClient.parseResponse(paypalResponse.Values["PAYMENTSTATUS"]),
+		PendingReason:        pClient.parseResponse(paypalResponse.Values["PENDINGREASON"]),
+		ReasonCode:           pClient.parseResponse(paypalResponse.Values["REASONCODE"]),
+		Timestamp:            pClient.parseResponse(paypalResponse.Values["TIMESTAMP"]),
+		TransactionType:      pClient.parseResponse(paypalResponse.Values["TRANSACTIONTYPE"]),
+		Version:              pClient.parseResponse(paypalResponse.Values["VERSION"]),
+	}
+}
+
+func (pClient *PayPalClient) parseResponse(s []string) string {
+	if s != nil {
+		return s[0]
+	} else {
+		return ""
 	}
 }
 
