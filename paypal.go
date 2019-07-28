@@ -324,7 +324,10 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 // See https://developer.paypal.com/docs/classic/api/merchant/DoCapture-API-Operation-NVP/ for details
 // func (pClient *PayPalClient) DoVoid()
 
-// *** I need to convert the return value into a struct
+// ConvertResponse takes the url.Values from the PayPal Response and places them into struct
+// According to their docs: Ack, CorrelationID, Timestamp, Version, and Build should be in every response
+// from PayPal so we return the values placed in the root of the PayPalResponse struct instead
+// of checking the url.Values array
 func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *PayPalValues {
 	return &PayPalValues{
 		Ack:                  paypalResponse.Ack,
@@ -342,17 +345,19 @@ func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *Pay
 		PendingReason:        pClient.parseResponse(paypalResponse.Values["PENDINGREASON"]),
 		ReasonCode:           pClient.parseResponse(paypalResponse.Values["REASONCODE"]),
 		Timestamp:            paypalResponse.Timestamp,
+		TransactionID:        pClient.parseResponse(paypalResponse.Values["TRANSACTIONID"]),
 		TransactionType:      pClient.parseResponse(paypalResponse.Values["TRANSACTIONTYPE"]),
 		Version:              pClient.parseResponse(paypalResponse.Values["VERSION"]),
 	}
 }
 
+// parseResponse is a helper function for convert response. this simple functionality
+// was pulled out to reduce duplicate code
 func (pClient *PayPalClient) parseResponse(s []string) string {
 	if s != nil {
 		return s[0]
-	} else {
-		return ""
 	}
+	return ""
 }
 
 // SetExpressCheckoutInitiateBilling is the first step to create a billing agreement. It returns a token that should be used to redirect the user so they can agree to recurring billing of varying quantities
