@@ -26,9 +26,9 @@ type PayPalClient struct {
 // PayPalCreditCard is composed of the data required to conduct a transaction against the payflow API with a credit card.
 // ExpirationDate is of the format MMYY
 type PayPalCreditCard struct {
-	PAN            string `json:"pan"`
-	Amount         string `json:"amount"`
-	ExpirationDate string `json:"expirationDate"`
+	PAN     string `json:"pan"`
+	Amount  string `json:"amount"`
+	ExpDate string `json:"expirationDate"`
 }
 
 // PayPalResponse encompases a generic response from PayFlow
@@ -94,6 +94,7 @@ func (pClient *PayPalClient) performRequest(values url.Values) (*PayPalResponse,
 	if err == nil {
 		response.Result = responseValues.Get("RESULT")
 		response.ResponseMessage = responseValues.Get("RESPMSG")
+		response.Values = responseValues
 
 		if response.Result != "0" {
 			pError := PayPalError{}
@@ -114,7 +115,7 @@ func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalResponse, error)
 	values.Set("TENDER", "C")
 	values.Set("ACCT", c.PAN)
 	values.Set("AMT", c.Amount)
-	values.Set("EXPDATE", c.ExpirationDate)
+	values.Set("EXPDATE", c.ExpDate)
 
 	return pClient.performRequest(values)
 }
