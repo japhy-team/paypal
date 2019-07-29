@@ -14,7 +14,7 @@ const (
 	NVP_PRODUCTION_URL      = "https://api-3t.paypal.com/nvp"
 	CHECKOUT_SANDBOX_URL    = "https://www.sandbox.paypal.com/cgi-bin/webscr"
 	CHECKOUT_PRODUCTION_URL = "https://www.paypal.com/cgi-bin/webscr"
-	NVP_VERSION             = "84"
+	NVP_VERSION             = "204"
 )
 
 type PayPalClient struct {
@@ -322,7 +322,37 @@ func (pClient *PayPalClient) DoCapture(paymentAmount string, authorizationID str
 
 // DoVoid voids an authorized payment
 // See https://developer.paypal.com/docs/classic/api/merchant/DoCapture-API-Operation-NVP/ for details
-// func (pClient *PayPalClient) DoVoid()
+func (pClient *PayPalClient) DoVoid(authorizationID, note, messageID string) (*PayPalResponse, error) {
+	err := new(PayPalError)
+	if len(authorizationID) > 19 {
+		err.Ack = "failure"
+		err.ErrorCode = "0"
+		err.ShortMessage = "authorizationID is longer than 19 characters"
+		err.SeverityCode = "0"
+		return nil, err
+	}
+	if len(note) > 255 {
+		err.Ack = "failure"
+		err.ErrorCode = "0"
+		err.ShortMessage = "authorizationID is longer than 255 characters"
+		err.SeverityCode = "0"
+		return nil, err
+	}
+	if len(messageID) > 38 {
+		err.Ack = "failure"
+		err.ErrorCode = "0"
+		err.ShortMessage = "authorizationID is longer than 38 characters"
+		err.SeverityCode = "0"
+		return nil, err
+	}
+	values := url.Values{}
+	values.Set("METHOD", "DoVoid")
+	values.Add("AUTHORIZATIONID", authorizationID)
+	values.Add("NOTE", note)
+	values.Add("MSGSUBID", messageID)
+
+	return pClient.PerformRequest(values)
+}
 
 // ConvertResponse takes the url.Values from the PayPal Response and places them into struct
 // According to their docs: Ack, CorrelationID, Timestamp, Version, and Build should be in every response
