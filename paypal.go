@@ -357,7 +357,8 @@ func (pClient *PayPalClient) DoVoid(authorizationID, note, messageID string) (*P
 // ConvertResponse takes the url.Values from the PayPal Response and places them into struct
 // According to their docs: Ack, CorrelationID, Timestamp, Version, and Build should be in every response
 // from PayPal so we return the values placed in the root of the PayPalResponse struct instead
-// of checking the url.Values array
+// of checking the url.Values array. Since some values may not be provided in the PayPalResponse struct
+// We have to check the response
 func (pClient *PayPalClient) ConvertResponse(paypalResponse PayPalResponse) *PayPalValues {
 	return &PayPalValues{
 		Ack:                  paypalResponse.Ack,
