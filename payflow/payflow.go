@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // These constants specify the URL that the library hits
@@ -37,6 +38,43 @@ type PayPalResponse struct {
 	ResponseMessage string     `json:"ResponseMessage"`
 	Values          url.Values `json:"Values"`
 	UsedSandbox     bool
+}
+
+// PayPalValues encapsulates all the possible return values that could come back from Payflow. See below docs:
+// https://developer.paypal.com/docs/classic/payflow/integration-guide/#transaction-responses
+type PayPalValues struct {
+	AdditionalMessages    string `json:"ADDLMSGS"`
+	Amount                string `json:"AMT"`
+	AmexID                string `json:"AMEXID"`    // VERBOSITY=HIGH
+	AmexPOSID             string `json:"AMEXPOSID"` //VERBOSITY=HIGH
+	AuthCode              string `json:"AUTHCODE"`
+	AVSAddress            string `json:"AVSADDR"`
+	AVSZipcode            string `json:"AVSZIP"`
+	AVSInternational      string `json:"IAVS"`
+	CardType              string `json:"CARDTYPE"` //VERBOSITY=HIGH
+	CorrelationID         string `json:"CORRELATIONID"`
+	CCTransID             string `json:"CCTRANSID"`
+	CCTransPOSData        string `json:"CCTRANS_POSDATA"`
+	CVV2Match             rune   `json:"CVV2MATCH"`
+	DateToSettle          string `json:"DATE_TO_SETTLE"` //This parameter is returned in the response for inquiry transactions only (TRXTYPE=I)
+	Duplicate             string `json:"DUPLICATE"`      // - DUPLICATE=2 — ORDERID has already been submitted in a previous request with the same ORDERID.  - DUPLICATE=1 — The request ID has already been submitted for a previous request.  - DUPLICATE=-1 — The Gateway database is not available. PayPal cannot determine whether this is a duplicate order or request.
+	EmailMatch            rune   `json:"EMAILMATCH"`
+	ExtraProcessorMessage string `json:"EXTRAPMSG"`
+	HostCode              string `json:"HOSTCODE"` //VERBOSITY=HIGH
+	OriginalAmount        string `json:"ORIGAMT"`
+	PaymentAdviceCode     string `json:"PAYMENTADVICECODE"` // A value of 03 or 21 indicates it is the merchant's responsibility to stop this recurring transaction. These two codes indicate that either the account was closed, fraud was involved, or the cardholder has asked the bank to stop this payment for another reason. Even if a re-attempted transaction is successful, it will likely result in a chargeback.
+	PaymentType           string `json:"PAYMENTTYPE"`
+	PhoneMatch            rune   `json:"PHONEMATCH"`
+	PNREF                 string `json:"PNREF"`
+	PPREF                 string `json:"PPREF"`
+	ProCardSecure         rune   `json:"PROCCARDSECURE"` //VERBOSITY=HIGH
+	ProcessorAVS          rune   `json:"PROCAVS"`        //VERBOSITY=HIGH
+	ProcessorCVV2         rune   `json:"PROCCVV2"`       //VERBOSITY=HIGH
+	Result                int    `json:"RESULT"`
+	ResponseMessage       string `json:"RESPMSG"`
+	ResponseText          string `json:"RESPTEXT"` //VERBOSITY=HIGH
+	TimeOfTransaction     string `json:"TRANSTIME"`
+	TransactionState      int    `json:"TRANSSTATE"` // State of the transaction sent in an Inquiry response or with errors associated with Fraud Protection Service (FPS) transactions
 }
 
 // PayPalError is used when RESP is anything but 0.
@@ -108,8 +146,57 @@ func (pClient *PayPalClient) performRequest(values url.Values) (*PayPalResponse,
 	return response, err
 }
 
+//parseResponse(paypalResponse.Values["AMT"])
+func convertResponse(paypalResponse *PayPalResponse) *PayPalValues {
+	result, _ := strconv.Atoi(parseResponse(paypalResponse.Values["RESULT"]))
+	transactionState, _ := strconv.Atoi(parseResponse(paypalResponse.Values["TRANSSATE"]))
+	return &PayPalValues{
+		AdditionalMessages:    parseResponse(paypalResponse.Values["ADDLMSGS"]),
+		Amount:                parseResponse(paypalResponse.Values["AMT"]),
+		AmexID:                parseResponse(paypalResponse.Values["AMEXID"]),
+		AmexPOSID:             parseResponse(paypalResponse.Values["AMEXPOSID"]),
+		AuthCode:              parseResponse(paypalResponse.Values["AUTHCODE"]),
+		AVSAddress:            parseResponse(paypalResponse.Values["AVSADDR"]),
+		AVSZipcode:            parseResponse(paypalResponse.Values["AVSZIP"]),
+		AVSInternational:      parseResponse(paypalResponse.Values["IAVS"]),
+		CardType:              parseResponse(paypalResponse.Values["CARDTYPE"]),
+		CorrelationID:         parseResponse(paypalResponse.Values["CORRELATIONID"]),
+		CCTransID:             parseResponse(paypalResponse.Values["CCTRANSID"]),
+		CCTransPOSData:        parseResponse(paypalResponse.Values["CCTRANS_POSDATA"]),
+		CVV2Match:             []rune(parseResponse(paypalResponse.Values["CVV2MATCH"]))[0],
+		DateToSettle:          parseResponse(paypalResponse.Values["DATE_TO_SETTLE"]), //This parameter is returned in the response for inquiry transactions only (TRXTYPE=I)
+		Duplicate:             parseResponse(paypalResponse.Values["DUPLICATE"]),      // - DUPLICATE=2 — ORDERID has already been submitted in a previous request with the same ORDERID.  - DUPLICATE=1 — The request ID has already been submitted for a previous request.  - DUPLICATE=-1 — The Gateway database is not available. PayPal cannot determine whether this is a duplicate order or request.
+		EmailMatch:            []rune(parseResponse(paypalResponse.Values["EMAILMATCH"]))[0],
+		ExtraProcessorMessage: parseResponse(paypalResponse.Values["EXTRAPMSG"]),
+		HostCode:              parseResponse(paypalResponse.Values["HOSTCODE"]),
+		OriginalAmount:        parseResponse(paypalResponse.Values["ORIGAMT"]),
+		PaymentAdviceCode:     parseResponse(paypalResponse.Values["PAYMENTADVICECODE"]), // A value of 03 or 21 indicates it is the merchant's responsibility to stop this recurring transaction. These two codes indicate that either the account was closed, fraud was involved, or the cardholder has asked the bank to stop this payment for another reason. Even if a re-attempted transaction is successful, it will likely result in a chargeback.
+		PaymentType:           parseResponse(paypalResponse.Values["PAYMENTTYPE"]),
+		PhoneMatch:            []rune(parseResponse(paypalResponse.Values["PHONEMATCH"]))[0],
+		PNREF:                 parseResponse(paypalResponse.Values["PNREF"]),
+		PPREF:                 parseResponse(paypalResponse.Values["PPREF"]),
+		ProCardSecure:         []rune(parseResponse(paypalResponse.Values["PROCCARDSECURE"]))[0],
+		ProcessorAVS:          []rune(parseResponse(paypalResponse.Values["PROCAVS"]))[0],
+		ProcessorCVV2:         []rune(parseResponse(paypalResponse.Values["PROCCVV2"]))[0], //VERBOSITY=HIGH
+		Result:                result,
+		ResponseMessage:       parseResponse(paypalResponse.Values["RESPMSG"]),
+		ResponseText:          parseResponse(paypalResponse.Values["RESPTEXT"]),
+		TimeOfTransaction:     parseResponse(paypalResponse.Values["TRANSTIME"]),
+		TransactionState:      transactionState,
+	}
+}
+
+// parseResponse is a helper function for convert response. this simple functionality
+// was pulled out to reduce duplicate code
+func parseResponse(s []string) string {
+	if s != nil {
+		return s[0]
+	}
+	return ""
+}
+
 // DoSale conducts a sale operation against payflow with the
-func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalResponse, error) {
+func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalValues, error) {
 	values := url.Values{}
 	values.Set("TRXTYPE", "S")
 	values.Set("TENDER", "C")
@@ -117,5 +204,6 @@ func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalResponse, error)
 	values.Set("AMT", c.Amount)
 	values.Set("EXPDATE", c.ExpDate)
 
-	return pClient.performRequest(values)
+	res, err := pClient.performRequest(values)
+	return convertResponse(res), err
 }
