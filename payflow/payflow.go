@@ -2,7 +2,6 @@ package payflow
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -220,6 +219,6 @@ func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalValues, error) {
 	values.Set("EXPDATE", c.ExpDate)
 
 	res, err := pClient.performRequest(values)
-	log.Printf("%v", res.Values)
+	// log.Printf("%v", res.Values)
 	return convertResponse(res), err
 }
