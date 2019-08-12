@@ -488,12 +488,23 @@ func (pClient *PayPalClient) ProfileTransactionSearch(profileId string, startDat
 	return pClient.PerformRequest(values)
 }
 
-func (pClient *PayPalClient) RefundTransaction(transactionID string, refundType string) (*PayPalResponse, error) {
+func (pClient *PayPalClient) RefundFullTransaction(transactionID string) (*PayPalResponse, error) {
 	values := url.Values{}
 
 	values.Set("METHOD", "RefundTransaction")
 	values.Set("TRANSACTIONID", transactionID)
 	values.Set("REFUNDTYPE", "FULL")
+
+	return pClient.PerformRequest(values)
+}
+
+func (pClient *PayPalClient) RefundPartialTransaction(transactionID string, amount string) (*PayPalResponse, error) {
+	values := url.Values{}
+
+	values.Set("METHOD", "RefundTransaction")
+	values.Set("TRANSACTIONID", transactionID)
+	values.Set("REFUNDTYPE", "PARTIAL")
+	values.Set("AMT", amount)
 
 	return pClient.PerformRequest(values)
 }

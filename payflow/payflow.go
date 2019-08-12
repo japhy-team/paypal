@@ -209,7 +209,8 @@ func parseRune(s string) rune {
 	return rune(0)
 }
 
-// DoSale conducts a sale operation against payflow with the
+// DoSale conducts a sale operation against payflow
+// PayPalCreditCard have a Card Number (PAN), Amount specified, and an expiration data in the format of MMYY
 func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalValues, error) {
 	values := url.Values{}
 	values.Set("TRXTYPE", "S")
@@ -222,3 +223,38 @@ func (pClient *PayPalClient) DoSale(c PayPalCreditCard) (*PayPalValues, error) {
 	// log.Printf("%v", res.Values)
 	return convertResponse(res), err
 }
+
+// DoAuth conducts an authorization against payflow
+// PayPalCreditCard have a Card Number (PAN), Amount specified, and an expiration data in the format of MMYY
+// isPartialAuthorization specifies if a partial authorization is acceptable. Read Below notes about authorizations for more information
+func (pClient *PayPalClient) DoAuth(c PayPalCreditCard, isPartialAuthorization bool) (*PayPalValues, error) {
+	values := url.Values{}
+	values.Set("TRXTYPE", "A")
+	values.Set("TENDER", "C")
+	values.Set("ACCT", c.PAN)
+	values.Set("AMT", c.Amount)
+	values.Set("EXPDATE", c.ExpDate)
+	if isPartialAuthorization {
+		values.Set("PARTIALAUTH", "Y")
+		values.Set("VERBOSITY", "HIGH")
+	}
+
+	res, err := pClient.performRequest(values)
+	return convertResponse(res), err
+}
+
+// Submitting Partial Authorizations
+
+// A partial authorization is a partial approval of an authorization (TRXTYPE=A) transaction.
+// A partial authorization approves a transaction when the balance available is less than the amount of the transaction.
+// The transaction response returns the amount of the original transaction and the amount approved.
+
+// When To Use Partial Authorizations
+// Use partial authorizations to reduce the number of declines resulting from buyers spending more than their balance on prepaid cards.
+
+// Say, for example, that you sell sportswear on your website. Joe purchases a pair of running shoes in the amount of $100.00. At checkout, Joe uses a gift card with a balance of $80.00 to pay. You request partial authorization of $100.00. The transaction response returns the original amount of $100.00 and the approved amount of $80.00.
+
+// You can take either of the following actions:
+
+// Accept the $80.00 and ask the buyer to provide an alternate payment for the additional $20.00.
+// Reject the partial authorization and submit to the card issuer an authorization reversal (Void) for $80.00.
