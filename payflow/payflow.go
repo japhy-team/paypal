@@ -43,38 +43,38 @@ type PayPalResponse struct {
 // PayPalValues encapsulates all the possible return values that could come back from Payflow. See below docs:
 // https://developer.paypal.com/docs/classic/payflow/integration-guide/#transaction-responses
 type PayPalValues struct {
-	AdditionalMessages    string `json:"ADDLMSGS"`
-	Amount                string `json:"AMT"`
-	AmexID                string `json:"AMEXID"`    // VERBOSITY=HIGH
-	AmexPOSID             string `json:"AMEXPOSID"` //VERBOSITY=HIGH
-	AuthCode              string `json:"AUTHCODE"`
-	AVSAddress            string `json:"AVSADDR"`
-	AVSZipcode            string `json:"AVSZIP"`
-	AVSInternational      string `json:"IAVS"`
-	CardType              string `json:"CARDTYPE"` //VERBOSITY=HIGH
-	CorrelationID         string `json:"CORRELATIONID"`
-	CCTransID             string `json:"CCTRANSID"`
-	CCTransPOSData        string `json:"CCTRANS_POSDATA"`
-	CVV2Match             rune   `json:"CVV2MATCH"`
-	DateToSettle          string `json:"DATE_TO_SETTLE"` //This parameter is returned in the response for inquiry transactions only (TRXTYPE=I)
-	Duplicate             string `json:"DUPLICATE"`      // - DUPLICATE=2 — ORDERID has already been submitted in a previous request with the same ORDERID.  - DUPLICATE=1 — The request ID has already been submitted for a previous request.  - DUPLICATE=-1 — The Gateway database is not available. PayPal cannot determine whether this is a duplicate order or request.
-	EmailMatch            rune   `json:"EMAILMATCH"`
-	ExtraProcessorMessage string `json:"EXTRAPMSG"`
-	HostCode              string `json:"HOSTCODE"` //VERBOSITY=HIGH
-	OriginalAmount        string `json:"ORIGAMT"`
-	PaymentAdviceCode     string `json:"PAYMENTADVICECODE"` // A value of 03 or 21 indicates it is the merchant's responsibility to stop this recurring transaction. These two codes indicate that either the account was closed, fraud was involved, or the cardholder has asked the bank to stop this payment for another reason. Even if a re-attempted transaction is successful, it will likely result in a chargeback.
-	PaymentType           string `json:"PAYMENTTYPE"`
-	PhoneMatch            rune   `json:"PHONEMATCH"`
-	PNREF                 string `json:"PNREF"`
-	PPREF                 string `json:"PPREF"`
-	ProCardSecure         rune   `json:"PROCCARDSECURE"` //VERBOSITY=HIGH
-	ProcessorAVS          rune   `json:"PROCAVS"`        //VERBOSITY=HIGH
-	ProcessorCVV2         rune   `json:"PROCCVV2"`       //VERBOSITY=HIGH
-	Result                int    `json:"RESULT"`
-	ResponseMessage       string `json:"RESPMSG"`
-	ResponseText          string `json:"RESPTEXT"` //VERBOSITY=HIGH
-	TimeOfTransaction     string `json:"TRANSTIME"`
-	TransactionState      int    `json:"TRANSSTATE"` // State of the transaction sent in an Inquiry response or with errors associated with Fraud Protection Service (FPS) transactions
+	AdditionalMessages    string `json:"ADDLMSGS,omitempty"`
+	Amount                string `json:"AMT,omitempty"`
+	AmexID                string `json:"AMEXID,omitempty"`    // VERBOSITY=HIGH
+	AmexPOSID             string `json:"AMEXPOSID,omitempty"` //VERBOSITY=HIGH
+	AuthCode              string `json:"AUTHCODE,omitempty"`
+	AVSAddress            string `json:"AVSADDR,omitempty"`
+	AVSZipcode            string `json:"AVSZIP,omitempty"`
+	AVSInternational      string `json:"IAVS,omitempty"`
+	CardType              string `json:"CARDTYPE,omitempty"` //VERBOSITY=HIGH
+	CorrelationID         string `json:"CORRELATIONID,omitempty"`
+	CCTransID             string `json:"CCTRANSID,omitempty"`
+	CCTransPOSData        string `json:"CCTRANS_POSDATA,omitempty"`
+	CVV2Match             rune   `json:"CVV2MATCH,omitempty"`
+	DateToSettle          string `json:"DATE_TO_SETTLE,omitempty"` //This parameter is returned in the response for inquiry transactions only (TRXTYPE=I)
+	Duplicate             string `json:"DUPLICATE,omitempty"`      // - DUPLICATE=2 — ORDERID has already been submitted in a previous request with the same ORDERID.  - DUPLICATE=1 — The request ID has already been submitted for a previous request.  - DUPLICATE=-1 — The Gateway database is not available. PayPal cannot determine whether this is a duplicate order or request.
+	EmailMatch            rune   `json:"EMAILMATCH,omitempty"`
+	ExtraProcessorMessage string `json:"EXTRAPMSG,omitempty"`
+	HostCode              string `json:"HOSTCODE,omitempty"` //VERBOSITY=HIGH
+	OriginalAmount        string `json:"ORIGAMT,omitempty"`
+	PaymentAdviceCode     string `json:"PAYMENTADVICECODE,omitempty"` // A value of 03 or 21 indicates it is the merchant's responsibility to stop this recurring transaction. These two codes indicate that either the account was closed, fraud was involved, or the cardholder has asked the bank to stop this payment for another reason. Even if a re-attempted transaction is successful, it will likely result in a chargeback.
+	PaymentType           string `json:"PAYMENTTYPE,omitempty"`
+	PhoneMatch            rune   `json:"PHONEMATCH,omitempty"`
+	PNREF                 string `json:"PNREF,omitempty"`
+	PPREF                 string `json:"PPREF,omitempty"`
+	ProCardSecure         rune   `json:"PROCCARDSECURE,omitempty"` //VERBOSITY=HIGH
+	ProcessorAVS          rune   `json:"PROCAVS,omitempty"`        //VERBOSITY=HIGH
+	ProcessorCVV2         rune   `json:"PROCCVV2,omitempty"`       //VERBOSITY=HIGH
+	Result                int    `json:"RESULT,omitempty"`
+	ResponseMessage       string `json:"RESPMSG,omitempty"`
+	ResponseText          string `json:"RESPTEXT,omitempty"` //VERBOSITY=HIGH
+	TimeOfTransaction     string `json:"TRANSTIME,omitempty"`
+	TransactionState      int    `json:"TRANSSTATE,omitempty"` // State of the transaction sent in an Inquiry response or with errors associated with Fraud Protection Service (FPS) transactions
 }
 
 // PayPalError is used when RESP is anything but 0.
