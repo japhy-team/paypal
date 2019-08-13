@@ -42,54 +42,29 @@ type PayPalResponse struct {
 	usedSandbox   bool
 }
 
-// type PayPalValues struct {
-// 	Ack                       string `json:"ACK"`
-// 	Amount                    string `json:"AMT"`
-// 	BillingAgreementID        string `json:"BILLINGAGREEMENTID"`
-// 	Build                     string `json:"BUILD"`
-// 	CorrelationID             string `json:"CORRELATIONID"`
-// 	CurrencyCode              string `json:"CURRENCYCODE"`
-// 	ErrorCode                 string `json:"ERRORCODE0"`
-// 	ErrorMessage              string `json:"L_SHORTMESSAGE0"`
-// 	ErrorMessageExtended      string `json:"L_LONGMESSAGE0"`
-// 	DateOrdered               string `json:"ORDERTIME"`
-// 	PaymentStatus             string `json:"PAYMENTSTATUS"`
-// 	PaymentType               string `json:"PAYMENTTYPE"`
-// 	PendingReason             string `json:"PENDINGREASON"`
-// 	ProtectionEligibility     string `json:"PROTECTIONELIGIBLITY"`
-// 	ProtectionEligibilityType string `json:"PROTECTIONELIGIBILITYTYPE"`
-// 	ReasonCode                string `json:"REASONCODE"`
-// 	SeverityCode              string `json:"L_SEVERITYCODE0"`
-// 	TaxedAmount               string `json:"TAXAMT"`
-// 	Timestamp                 string `json:"TIMESTAMP"`
-// 	TransactionID             string `json:"TRANSACTIONID"`
-// 	TransactionType           string `json:"TRANSACTIONTYPE"`
-// 	Version                   string `json:"VERSION"`
-// }
-
 type PayPalValues struct {
-	Ack                       string
-	Amount                    string
-	BillingAgreementID        string
-	Build                     string
-	CorrelationID             string
-	CurrencyCode              string
-	ErrorCode                 string
-	ErrorMessage              string
-	ErrorMessageExtended      string
-	DateOrdered               string
-	PaymentStatus             string
-	PaymentType               string
-	PendingReason             string
-	ProtectionEligibility     string
-	ProtectionEligibilityType string
-	ReasonCode                string
-	SeverityCode              string
-	TaxedAmount               string
-	Timestamp                 string
-	TransactionID             string
-	TransactionType           string
-	Version                   string
+	Ack                       string `json:"ack,omitempty"`
+	Amount                    string `json:"amt,omitempty"`
+	BillingAgreementID        string `json:"billingagreementid,omitempty"`
+	Build                     string `json:"build,omitempty"`
+	CorrelationID             string `json:"correlationid,omitempty"`
+	CurrencyCode              string `json:"currencycode,omitempty"`
+	ErrorCode                 string `json:"errorcode0,omitempty"`
+	ErrorMessage              string `json:"l_shortmessage0,omitempty"`
+	ErrorMessageExtended      string `json:"l_longmessage0,omitempty"`
+	DateOrdered               string `json:"ordertime,omitempty"`
+	PaymentStatus             string `json:"paymentstatus,omitempty"`
+	PaymentType               string `json:"paymenttype,omitempty"`
+	PendingReason             string `json:"pendingreason,omitempty"`
+	ProtectionEligibility     string `json:"protectioneligiblity,omitempty"`
+	ProtectionEligibilityType string `json:"protectioneligibilitytype,omitempty"`
+	ReasonCode                string `json:"reasoncode,omitempty"`
+	SeverityCode              string `json:"l_severitycode0,omitempty"`
+	TaxedAmount               string `json:"taxamt,omitempty"`
+	Timestamp                 string `json:"timestamp,omitempty"`
+	TransactionID             string `json:"transactionid,omitempty"`
+	TransactionType           string `json:"transactiontype,omitempty"`
+	Version                   string `json:"version,omitempty"`
 }
 
 type PayPalError struct {
