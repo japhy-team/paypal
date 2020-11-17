@@ -290,6 +290,15 @@ func NewExpressCheckoutSingleArgs() *ExpressCheckoutSingleArgs {
 	}
 }
 
+type ExpressCheckoutArgs struct {
+	Amount                             float64
+	CurrencyCode, ReturnURL, CancelURL string
+	BillingAgreementDescription        string
+	Brandname                          string
+	LogoImg                            string
+	Item                               *PayPalDigitalGood
+}
+
 // DoReferenceTransaction Completes a transaction through Billing Agreements
 // see (https://developer.paypal.com/docs/classic/api/merchant/DoReferenceTransaction-API-Operation-NVP/ for more information
 func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, referenceID string, paymentMethod string, merchantSessionID string) (*PayPalResponse, error) {
@@ -509,7 +518,7 @@ func (pClient *PayPalClient) RefundPartialTransaction(transactionID string, amou
 	return pClient.PerformRequest(values)
 }
 
-func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args ExpressCheckoutSingleArgs, billingAgreementDescription string) (*PayPalResponse, error) {
+func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args *ExpressCheckoutArgs) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "SetExpressCheckout")
 
@@ -517,20 +526,21 @@ func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args Ex
 	values.Add("PAYMENTREQUEST_0_PAYMENTACTION", "Sale")
 	values.Add("PAYMENTREQUEST_0_CURRENCYCODE", args.CurrencyCode)
 	values.Add("PAYMENTREQUEST_0_DESC", args.Item.Name)
+	values.Add("PAYMENTREQUEST_0_ALLOWEDPAYMENTMETHOD", "InstantPaymentOnly")
 
 	values.Add("L_BILLINGTYPE0", "MerchantInitiatedBillingSingleAgreement")
-	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", billingAgreementDescription)
+	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", args.BillingAgreementDescription)
 	values.Add("L_PAYMENTTYPE0", "Any")
 
 	values.Add("RETURNURL", args.ReturnURL)
 	values.Add("CANCELURL", args.CancelURL)
 	values.Add("REQCONFIRMSHIPPING", "0")
 	values.Add("NOSHIPPING", "1")
-	values.Add("SOLUTIONTYPE", "Sole")
-
-	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_NAME"), args.Item.Name)
-	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_AMT"), fmt.Sprintf("%.2f", args.Item.Amount))
-	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_QTY"), fmt.Sprintf("%d", args.Item.Quantity))
+	values.Add("SOLUTIONTYPE", "Mark")
+	values.Add("LANDINPAGE", "Login")
+	values.Add("CHANNELTYPE", "Merchant")
+	values.Add("BRANDNAME", args.Brandname)
+	values.Add("LOGOIMG", args.LogoImg)
 
 	return pClient.PerformRequest(values)
 }
