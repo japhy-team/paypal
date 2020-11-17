@@ -508,3 +508,29 @@ func (pClient *PayPalClient) RefundPartialTransaction(transactionID string, amou
 
 	return pClient.PerformRequest(values)
 }
+
+func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args ExpressCheckoutSingleArgs, billingAgreementDescription string) (*PayPalResponse, error) {
+	values := url.Values{}
+	values.Set("METHOD", "SetExpressCheckout")
+
+	values.Add("PAYMENTREQUEST_0_AMT", fmt.Sprintf("%.2f", args.Amount))
+	values.Add("PAYMENTREQUEST_0_PAYMENTACTION", "Sale")
+	values.Add("PAYMENTREQUEST_0_CURRENCYCODE", args.CurrencyCode)
+	values.Add("PAYMENTREQUEST_0_DESC", args.Item.Name)
+
+	values.Add("L_BILLINGTYPE0", "MerchantInitiatedBillingSingleAgreement")
+	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", billingAgreementDescription)
+	values.Add("L_PAYMENTTYPE0", "Any")
+
+	values.Add("RETURNURL", args.ReturnURL)
+	values.Add("CANCELURL", args.CancelURL)
+	values.Add("REQCONFIRMSHIPPING", "0")
+	values.Add("NOSHIPPING", "1")
+	values.Add("SOLUTIONTYPE", "Sole")
+
+	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_NAME"), args.Item.Name)
+	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_AMT"), fmt.Sprintf("%.2f", args.Item.Amount))
+	values.Add(fmt.Sprintf("%s", "L_PAYMENTREQUEST_0_QTY"), fmt.Sprintf("%d", args.Item.Quantity))
+
+	return pClient.PerformRequest(values)
+}
