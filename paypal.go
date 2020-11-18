@@ -296,7 +296,7 @@ type ExpressCheckoutArgs struct {
 	BillingAgreementDescription        string
 	Brandname                          string
 	LogoImg                            string
-	Item                               *PayPalDigitalGood
+	Items                              []PayPalDigitalGood
 }
 
 // DoReferenceTransaction Completes a transaction through Billing Agreements
@@ -525,13 +525,13 @@ func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args *E
 	values.Add("PAYMENTREQUEST_0_AMT", fmt.Sprintf("%.2f", args.Amount))
 	values.Add("PAYMENTREQUEST_0_PAYMENTACTION", "Sale")
 	values.Add("PAYMENTREQUEST_0_CURRENCYCODE", args.CurrencyCode)
-	values.Add("PAYMENTREQUEST_0_DESC", args.Item.Name)
+	values.Add("PAYMENTREQUEST_0_DESC", args.Items[0].Name)
 	values.Add("PAYMENTREQUEST_0_ALLOWEDPAYMENTMETHOD", "InstantPaymentOnly")
 
-	values.Add("L_PAYMENTREQUEST_0_NAME", args.Item.Name)
-	values.Add("L_PAYMENTREQUEST_0_AMT", fmt.Sprintf("%.2f", args.Item.Amount))
-	values.Add("L_PAYMENTREQUEST_0_QTY", fmt.Sprintf("%d", args.Item.Quantity))
-	values.Add("L_PAYMENTREQUEST_0_ITEMCATEGORY", "Digital")
+	for i := 0; i < len(args.Items); i++ {
+		item := args.Items[i]
+		values.Add(fmt.Sprintf("%s%d", "L_PAYMENTREQUEST_0_QTY", i), fmt.Sprintf("%d", item.Quantity))
+	}
 
 	values.Add("L_BILLINGTYPE0", "MerchantInitiatedBillingSingleAgreement")
 	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", args.BillingAgreementDescription)
