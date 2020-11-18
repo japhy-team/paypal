@@ -528,6 +528,11 @@ func (pClient *PayPalClient) SetExpressCheckoutPaymentAndInitiateBilling(args *E
 	values.Add("PAYMENTREQUEST_0_DESC", args.Item.Name)
 	values.Add("PAYMENTREQUEST_0_ALLOWEDPAYMENTMETHOD", "InstantPaymentOnly")
 
+	values.Add("L_PAYMENTREQUEST_0_NAME", args.Item.Name)
+	values.Add("L_PAYMENTREQUEST_0_AMT", fmt.Sprintf("%.2f", args.Item.Amount))
+	values.Add("L_PAYMENTREQUEST_0_QTY", fmt.Sprintf("%d", args.Item.Quantity))
+	values.Add("L_PAYMENTREQUEST_0_ITEMCATEGORY", "Digital")
+
 	values.Add("L_BILLINGTYPE0", "MerchantInitiatedBillingSingleAgreement")
 	values.Add("L_BILLINGAGREEMENTDESCRIPTION0", args.BillingAgreementDescription)
 	values.Add("L_PAYMENTTYPE0", "Any")
