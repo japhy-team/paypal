@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"paypal"
+	"github.com/japhy-team/paypal"
 )
 
 const (
