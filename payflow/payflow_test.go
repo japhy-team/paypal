@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"paypal/payflow"
+	"github.com/japhy-team/paypal/payflow"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
