@@ -301,12 +301,13 @@ type ExpressCheckoutArgs struct {
 
 // DoReferenceTransaction Completes a transaction through Billing Agreements
 // see (https://developer.paypal.com/docs/classic/api/merchant/DoReferenceTransaction-API-Operation-NVP/ for more information
-func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, referenceID string, paymentMethod string, merchantSessionID string) (*PayPalResponse, error) {
+func (pClient *PayPalClient) DoReferenceTransaction(paymentAmount string, referenceID string, paymentMethod string, currencyCode string) (*PayPalResponse, error) {
 	values := url.Values{}
 	values.Set("METHOD", "DoReferenceTransaction")
 	values.Add("AMT", paymentAmount)
 	values.Add("PAYMENTACTION", paymentMethod)
 	values.Add("REFERENCEID", referenceID)
+	values.Add("CURRENCYCODE", currencyCode)
 
 	return pClient.PerformRequest(values)
 }
